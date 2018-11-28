@@ -1,5 +1,10 @@
 from app import app
 
+
+if __name__ == '__main__':
+    app.run(debug=True, use_reloader=True)
+
+
 # from flask import Flask, render_template, session, request, flash, redirect, url_for
 # from pymongo import MongoClient
 #
