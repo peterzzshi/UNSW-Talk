@@ -8,22 +8,7 @@ if __name__ == '__main__':
 # from flask import Flask, render_template, session, request, flash, redirect, url_for
 # from pymongo import MongoClient
 #
-# from functools import wraps
-#
-# from wtforms import Form, BooleanField, StringField, PasswordField, validators
-#
-# class RegistrationForm(Form):
-#     username = StringField('Username', [validators.Length(min=4, max=25)])
-#     email = StringField('Email Address', [validators.Length(min=6, max=35)])
-#     password = PasswordField('New Password', [
-#         validators.DataRequired(),
-#         validators.EqualTo('confirm', message='Passwords must match')
-#     ])
-#     confirm = PasswordField('Repeat Password')
-#     accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
-#
-#
-#
+
 #
 #
 # client = MongoClient('localhost', 27017)
