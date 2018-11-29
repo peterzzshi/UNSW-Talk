@@ -12,7 +12,7 @@ client = MongoClient('localhost', 27017)
 db = client["UNSW-Talk"]
 migrate = Migrate(app, db)
 login = LoginManager(app)
-
+login.login_view = 'login'
 
 
 from app import routes
