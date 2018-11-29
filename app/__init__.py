@@ -10,7 +10,7 @@ app.config.from_object(Config)
 
 client = MongoClient('localhost', 27017)
 db = client["UNSW-Talk"]
-migrate = Migrate(app, db)
+# migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 

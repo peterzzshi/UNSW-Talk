@@ -7,6 +7,11 @@ from werkzeug.urls import url_parse
 from app.forms import LoginForm, RegistrationForm
 from app.models import Student
 
+
+
+
+
+
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -25,17 +30,13 @@ def login():
         flash('Login requested for user {}, password {}, remember_me={}'.format(
             form.email.data, form.password.data, form.remember_me.data))
 
-        flash(student)
-
         if student is None or not student.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(student, remember=form.remember_me.data)
 
-        flash('Login requested for user {}, password {}, remember_me={}'.format(
-            form.email.data, form.password.data, form.remember_me.data))
-
         next_page = request.args.get('next')
+
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
