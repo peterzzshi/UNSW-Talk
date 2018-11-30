@@ -78,7 +78,7 @@ class Student(UserMixin):
 #
 # print(data.json())
 
-student = Student("z5195731", 'z5195731@unsw.edu.au', 12345, "Luke Wang", '1999-09-22')
+# student = Student("z5195731", 'z5195731@unsw.edu.au', 12345, "Luke Wang", '1999-09-22')
 # print(student)
 # student.save_to_mongo()
 # print(student)

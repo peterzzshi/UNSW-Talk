@@ -28,8 +28,13 @@ class RegistrationForm(FlaskForm):
 
     submit = SubmitField('Register')
 
+    def validate_zid(self, zid):
+        student = Student.get_by_id(zid)
+        if student is not None:
+            raise ValidationError('Please use a different Zid.')
 
-    # def validate_email(self, email):
-    #     student = Student.get_by_email(email)
-    #     if student is not None:
-    #         raise ValidationError('Please use a different email address.')
+
+    def validate_email(self, email):
+        student = Student.get_by_email(email)
+        if student is not None:
+            raise ValidationError('Please use a different email address.')
