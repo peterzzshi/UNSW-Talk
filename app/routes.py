@@ -2,13 +2,11 @@ from flask import render_template, flash, redirect, url_for, request
 from app import app
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
+import datetime
 
 
 from app.forms import LoginForm, RegistrationForm
 from app.models import Student
-
-
-
 
 
 
@@ -26,6 +24,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
+
         student = Student.get_by_email(email=form.email.data)
         flash('Login requested for user {}, password {}, remember_me={}'.format(
             form.email.data, form.password.data, form.remember_me.data))
@@ -46,22 +45,22 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    # if current_user.is_authenticated:
-    #     return redirect(url_for('index'))
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = RegistrationForm()
+
     if form.validate_on_submit():
-        flash('Register requested for user {}, password={}, email={}'.format(
-            form.username.data, form.password.data, form.email.data))
+        _id = form.zid.data
+        email = form.email.data
+        password = form.password.data
+        full_name = form.full_name.data
+        birthday = form.birthday.data.strftime("%Y-%m-%d")
+        student = Student(_id, email, password, full_name, birthday)
 
-
-        # user = User(username=form.username.data, email=form.email.data)
-        # user.set_password(form.password.data)
-
-        # db.session.add(user)
-        # db.session.commit()
+        student.save_to_mongo()
 
         flash('Congratulations, you are now a registered user!')
-        # return redirect(url_for('login'))
+        return redirect(url_for('index'))
     return render_template('register.jinja2', title='Register', form=form)
 
 

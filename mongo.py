@@ -1,6 +1,8 @@
 import os
 from itertools import groupby
 from pymongo import MongoClient
+from werkzeug.security import generate_password_hash
+
 
 client = MongoClient('localhost', 27017)
 db = client["UNSW-Talk"]
@@ -23,10 +25,14 @@ def read_student_information(zid):
     for field in fields:
         if field[0] == "friends" or field[0] == "courses":
             student_information[field[0]] = field[1].strip()[1:-2].split(', ')
+        elif field[0] == "zid":
+            student_information['_id'] = zid
+        # elif field[0] == "password":
+        #     student_information["password_hash"] = generate_password_hash(field[1].strip())
         else:
             student_information[field[0]] = field[1].strip()
     student_information['image'] = image_path
-    student_information['_id'] = zid
+    # student_information['_id'] = zid
     return student_information
 
 
@@ -105,3 +111,6 @@ for student_id in student_ids:
 
         student_posts = read_student_posts(student_id)
         posts.insert(student_posts)
+
+
+client.close()
