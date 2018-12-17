@@ -1,6 +1,7 @@
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from hashlib import md5
 
 
 @login.user_loader
@@ -27,15 +28,21 @@ class Student(UserMixin):
     def __repr__(self):
         return '<User {}, name: {}>'.format(self._id, self.full_name)
 
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
+
     def get_id(self):
         return self._id
 
     # def set_password(self, password):
     #     self.password_hash = generate_password_hash(password)
 
+    def check_password(self, input_password):
+        return self.password == input_password
 
-    # def check_password(self, password):
-    #     return check_password_hash(self.password_hash, password)
+
 
     @classmethod
     def get_by_id(cls, _id):

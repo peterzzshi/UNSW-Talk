@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 
-from app.forms import LoginForm, RegistrationForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm
 from app.models import Student
 
 
@@ -65,3 +65,34 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/student/<zid>')
+@login_required
+def student(zid):
+    student = Student.get_by_id(zid)
+    print(student)
+
+
+    posts = [
+        {'author': student, 'body': 'Test post #1'},
+        {'author': student, 'body': 'Test post #2'}
+    ]
+    return render_template('student.jinja2', student=student, posts=posts)
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        current_user.full_name = form.full_name.data
+        # current_user.about_me = form.about_me.data
+        flash('Your changes have been saved.')
+        print(current_user)
+        return redirect(url_for('edit_profile'))
+    elif request.method == 'GET':
+        form.full_name.data = current_user.full_name
+        # form.about_me.data = current_user.about_me
+    return render_template('edit_profile.jinja2', title='Edit Profile',
+                           form=form)

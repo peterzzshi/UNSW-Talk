@@ -1,0 +1,108 @@
+{% extends "base.jinja2" %}
+
+
+{% block head %}
+
+    {#    <meta name="viewport" content="initial-scale=1.0">#}
+
+    <meta id="home_latitude" data-name="{{student.home_latitude}}">
+    <meta id="home_longitude" data-name="{{student.home_longitude}}">
+
+
+
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map {
+            height: 50%;
+            width: 50%;
+
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+
+        }
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+    <table>
+        <tr valign="top">
+            <td><img src="{{ student.avatar(128) }}"></td>
+            <td><h1>Name: {{ student.full_name }}</h1></td>
+        </tr>
+    </table>
+
+
+
+{#    <h1>Name: {{ student.full_name }}</h1>#}
+    <h1>Birthday: {{ student.birthday }}</h1>
+    <h1>Program: {{ student.program }}</h1>
+    <h1>Courses: </h1>
+
+    {% if student.courses %}
+        {% for course in student.courses %}
+
+            <li>{{ course }}</li>
+        {% endfor %}
+    {% endif %}
+
+
+
+    <hr>
+
+
+    {% for post in posts %}
+        <p>
+            {{ post.author.username }} says: <b>{{ post.body }}</b>
+        </p>
+    {% endfor %}
+
+
+
+
+
+
+    <div id="map"></div>
+
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+
+
+    <script>
+
+
+        var centre = {
+            lat: parseFloat($('#home_latitude').data()["name"]),
+            lng: parseFloat($('#home_longitude').data()["name"])
+        };
+
+        var map;
+        function initMap() {$("map")
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: centre,
+                zoom: 16
+            });
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAysHTlRv9VSV5xuSxRejZ6MDM226bgCxU
+&callback=initMap"
+            async defer></script>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
