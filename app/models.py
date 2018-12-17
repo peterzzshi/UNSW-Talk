@@ -10,7 +10,7 @@ def load_user(zid):
 
 
 class Student(UserMixin):
-    def __init__(self, _id, email, password, full_name, birthday, image=None, friends=None, program=None, courses=None, home_suburb=None, home_latitude=None, home_longitude=None):
+    def __init__(self, _id, email, password, full_name, birthday, image=None, friends=[], program=None, courses=None, home_suburb=None, home_latitude=None, home_longitude=None):
         self._id = _id
         self.email = email
         self.password = password
@@ -42,6 +42,26 @@ class Student(UserMixin):
     def check_password(self, input_password):
         return self.password == input_password
 
+    def add_friend(self, zid):
+        if zid in self.friends:
+            return False
+        else:
+            self.friends.append(zid)
+            new_friend = Student.get_by_id(zid)
+            new_friend.friends.append(self._id)
+
+            db["students"].update_one({"_id": self._id}, {"$set": self.json()})
+            db["students"].update_one({"_id": new_friend._id}, {"$set": new_friend.json()})
+
+    def remove_friend(self, zid):
+        if zid not in self.friends:
+            return False
+        else:
+            self.friends.remove(zid)
+            lost_friend = Student.get_by_id(zid)
+            lost_friend.friends.remove(self._id)
+            db["students"].update_one({"_id": self._id}, {"$set": self.json()})
+            db["students"].update_one({"_id": lost_friend._id}, {"$set": lost_friend.json()})
 
 
     @classmethod
@@ -75,20 +95,29 @@ class Student(UserMixin):
         db["students"].insert(self.json())
 
 
-
-
-
-
-
-
-# data = Student.get_by_email("z5195734@unsw.edu.au")
+s1 = Student.get_by_id("z5198807")
+print("s1 before:")
+# print(student.json())
+print(s1.friends)
 #
-# print(data.json())
+s2 = Student.get_by_id("z5195731")
+print("s2 before:" )
+# # print(newfriend.json())
+print(s2.friends)
+#
+#
+s1.remove_friend("z5195731")
 
-# student = Student("z5195731", 'z5195731@unsw.edu.au', 12345, "Luke Wang", '1999-09-22')
-# print(student)
-# student.save_to_mongo()
-# print(student)
+print("s1 after:" )
+# print(student.json())
+print(Student.get_by_id("z5198807").friends)
 
-# print(Student.get_by_id(_id="z5195731"))
+print("s2 after:")
+# print(newfriend.json())
+print(Student.get_by_id("z5195731").friends)
 
+
+# Student("z5195731", 'z5195731@unsw.edu.au', 12345, "Luke Wang", '1999-09-22').save_to_mongo()
+
+
+# print(Student.get_by_id("z5195731").friends)
