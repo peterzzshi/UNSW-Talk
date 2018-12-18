@@ -31,10 +31,14 @@
 {% block content %}
 
 
-                {% if student == current_user %}
-                <p><a href="{{ url_for('edit_profile') }}">Edit your profile</a></p>
-                {% endif %}
+    {% if student == current_user %}
+        <p><a href="{{ url_for('edit_profile') }}">Edit your profile</a></p>
 
+    {% elif not current_user.friends_with(student._id) %}
+        <p><a href="{{ url_for('add_friend', zid=student._id) }}">Add friend</a></p>
+    {% else %}
+        <p><a href="{{ url_for('remove_friend', zid=student._id) }}">Unfriend</a></p>
+    {% endif %}
 
 
     <table>
@@ -46,7 +50,7 @@
 
 
 
-{#    <h1>Name: {{ student.full_name }}</h1>#}
+    {#    <h1>Name: {{ student.full_name }}</h1>#}
     <h1>Birthday: {{ student.birthday }}</h1>
     <h1>Program: {{ student.program }}</h1>
     <h1>Courses: </h1>

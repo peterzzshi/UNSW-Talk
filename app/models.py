@@ -42,8 +42,11 @@ class Student(UserMixin):
     def check_password(self, input_password):
         return self.password == input_password
 
+    def friends_with(self, zid):
+        return zid in self.friends
+
     def add_friend(self, zid):
-        if zid in self.friends:
+        if self.friends_with(zid):
             return False
         else:
             self.friends.append(zid)
@@ -54,14 +57,14 @@ class Student(UserMixin):
             db["students"].update_one({"_id": new_friend._id}, {"$set": new_friend.json()})
 
     def remove_friend(self, zid):
-        if zid not in self.friends:
-            return False
-        else:
+        if self.friends_with(zid):
             self.friends.remove(zid)
             lost_friend = Student.get_by_id(zid)
             lost_friend.friends.remove(self._id)
             db["students"].update_one({"_id": self._id}, {"$set": self.json()})
             db["students"].update_one({"_id": lost_friend._id}, {"$set": lost_friend.json()})
+        else:
+            return False
 
 
     @classmethod
@@ -94,27 +97,6 @@ class Student(UserMixin):
     def save_to_mongo(self):
         db["students"].insert(self.json())
 
-
-s1 = Student.get_by_id("z5198807")
-print("s1 before:")
-# print(student.json())
-print(s1.friends)
-#
-s2 = Student.get_by_id("z5195731")
-print("s2 before:" )
-# # print(newfriend.json())
-print(s2.friends)
-#
-#
-s1.remove_friend("z5195731")
-
-print("s1 after:" )
-# print(student.json())
-print(Student.get_by_id("z5198807").friends)
-
-print("s2 after:")
-# print(newfriend.json())
-print(Student.get_by_id("z5195731").friends)
 
 
 # Student("z5195731", 'z5195731@unsw.edu.au', 12345, "Luke Wang", '1999-09-22').save_to_mongo()

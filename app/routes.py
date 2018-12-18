@@ -71,13 +71,12 @@ def logout():
 @login_required
 def student(zid):
     student = Student.get_by_id(zid)
-    print(student)
-
 
     posts = [
         {'author': student, 'body': 'Test post #1'},
         {'author': student, 'body': 'Test post #2'}
     ]
+
     return render_template('student.jinja2', student=student, posts=posts)
 
 
@@ -93,5 +92,47 @@ def edit_profile():
     elif request.method == 'GET':
         form.full_name.data = current_user.full_name
         # form.about_me.data = current_user.about_me
-    return render_template('edit_profile.jinja2', title='Edit Profile',
-                           form=form)
+    return render_template('edit_profile.jinja2', title='Edit Profile', form=form)
+
+
+@app.route('/add_friend/<zid>')
+@login_required
+def add_friend(zid):
+
+    if current_user.friends_with(zid):
+        flash('You are already friends with {}'.format(zid))
+        return redirect(url_for('index'))
+    new_friend = Student.get_by_id(zid)
+    if new_friend is None:
+        flash('User {} not found.'.format(zid))
+        return redirect(url_for('index'))
+    if new_friend == current_user:
+        flash('You cannot add yourself!')
+        return redirect(url_for('student', zid=zid))
+    current_user.add_friend(zid)
+    flash('You are now friends with {}!'.format(new_friend.full_name))
+    print(current_user.friends)
+    return redirect(url_for('student', zid=zid))
+
+
+
+@app.route('/remove_friend/<zid>')
+@login_required
+def remove_friend(zid):
+    print(current_user.friends)
+    if not current_user.friends_with(zid):
+        flash('You are not friends with {}'.format(zid))
+        return redirect(url_for('index'))
+    lost_friend = Student.get_by_id(zid)
+
+    if lost_friend is None:
+        flash('User {} not found.'.format(zid))
+        return redirect(url_for('index'))
+    if lost_friend == current_user:
+        flash('You cannot unfriend yourself!')
+        return redirect(url_for('student', zid=zid))
+    current_user.remove_friend(zid)
+
+    flash('You have unfriended {}!'.format(lost_friend.full_name))
+
+    return redirect(url_for('student', zid=zid))
