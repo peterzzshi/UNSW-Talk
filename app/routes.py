@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
 from app.models import Student
 
 
@@ -12,7 +12,24 @@ from app.models import Student
 @app.route('/index')
 @login_required
 def index():
-    return render_template('index.jinja2', title='home page')
+    form = PostForm()
+    if form.validate_on_submit():
+        # post = Post(body=form.post.data, author=current_user)
+
+        flash('Your post is now live!')
+        return redirect(url_for('index'))
+    posts = [
+        {
+            'author': {'username': 'John'},
+            'body': 'Beautiful day in Portland!'
+        },
+        {
+            'author': {'username': 'Susan'},
+            'body': 'The Avengers movie was so cool!'
+        }
+    ]
+
+    return render_template('index.jinja2', form=form, title='home page')
 
 
 @app.route('/login', methods=['GET', 'POST'])
