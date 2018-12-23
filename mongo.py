@@ -47,9 +47,9 @@ def read_student_posts(zid):
         """Extract all numbers from file as tuple (8,1,3) ... etc."""
         return tuple(map(int, name.split(".")[0].split("-")))
 
-    posts_information = {
-        '_id': zid
-    }
+    # posts_information = {
+    #     '_id': zid
+    # }
 
     posts = []
     
@@ -93,9 +93,9 @@ def read_student_posts(zid):
         post["comments"] = comments
         posts.append(post)
 
-    posts_information["posts"] = posts
+    # posts_information["posts"] = posts
 
-    return posts_information
+    return posts
 
 
 students.remove({})
@@ -110,7 +110,9 @@ for student_id in student_ids:
         students.insert(student_information)
 
         student_posts = read_student_posts(student_id)
-        posts.insert(student_posts)
+        for student_post in student_posts:
+        	posts.insert(student_post)
+        # posts.insert(student_posts)
 
 
 client.close()
