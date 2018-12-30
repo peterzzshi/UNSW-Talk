@@ -5,7 +5,7 @@ from werkzeug.urls import url_parse
 
 
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
-from app.models import Student
+from app.models import Student, Post
 
 
 @app.route('/')
@@ -18,18 +18,21 @@ def index():
 
         flash('Your post is now live!')
         return redirect(url_for('index'))
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
+    print(current_user._id)
+    posts = Post.get_by_id(current_user._id)
+    print(posts)
+    # posts = [
+    #     {
+    #         'author': {'username': 'John'},
+    #         'body': 'Beautiful day in Portland!'
+    #     },
+    #     {
+    #         'author': {'username': 'Susan'},
+    #         'body': 'The Avengers movie was so cool!'
+    #     }
+    # ]
 
-    return render_template('index.jinja2', form=form, title='home page')
+    return render_template('index.jinja2', form=form, posts=posts, title='home page')
 
 
 @app.route('/login', methods=['GET', 'POST'])

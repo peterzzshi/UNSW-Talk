@@ -63,7 +63,11 @@ def read_student_posts(zid):
             for line in f:
                 if ': ' in line:
                     index = line.index(":")
-                    post[line[:index]] = line[index + 1:].strip()
+                    if line[:index] == "from":
+                    	post["author"] = line[index + 1:].strip()
+                    else:
+                    	post[line[:index]] = line[index + 1:].strip()
+
 
         comments = []
         for i in range(1, len(posts_filenames)):
@@ -75,20 +79,28 @@ def read_student_posts(zid):
                     for line in f:
                         if ': ' in line:
                             index = line.index(":")
-                            comment[line[:index]] = line[index + 1:].strip()
-                comment["replies"] = []
+                            if line[:index] == "from":
+                            	comment["author"] = line[index + 1:].strip()
+                            else:
+                            	comment[line[:index]] = line[index + 1:].strip()
+                comment["comments"] = []
                 comments.append(comment)
+                comment = {}
                 # Whenever a file of length 2 appears, it means a new comment
                 last_file = posts_filenames[i]
 
             if length == 3:
-                reply = {}
+                comment = {}
                 with open(os.path.join(students_dir, zid, posts_filenames[i])) as f:
                     for line in f:
                         if ': ' in line:
                             index = line.index(":")
-                            reply[line[:index]] = line[index + 1:].strip()
-                comments[-1]["replies"].append(reply)
+                            if line[:index] == "from":
+                            	comment["author"] = line[index + 1:].strip()
+                            else: 
+                            	comment[line[:index]] = line[index + 1:].strip()
+                            # reply[line[:index]] = line[index + 1:].strip()
+                comments[-1]["comments"].append(comment)
 
         post["comments"] = comments
         posts.append(post)
