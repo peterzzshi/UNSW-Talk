@@ -30,26 +30,32 @@
 
 
     {% for post in posts %}
-
-            {{ post.id_to_name(post.json().author) }}
+        <img src="{{ post.show_pic(post.json().author, 24) }}">
+        {{ post.show_name(post.json().author) }}
         <br>
-{#            {{ post.json().author }}#}
-            {{ post.json().message }}
+        {{ post.time }}
         <br>
-            {{ post.json().time }}
+        {#            {{ post.json().author }}#}
+        {{ post.json().message }}
+        <br>
+        <span prettydate>{{ post.json().time }}</span>
+        <br>
+        <span prettydate>Jan 01 2014 20:14:11</span>
 
 
 
-            {% if post.json().comments %}
-                COMMENTS:
-                {% for comment in post.json().comments %}
-                    <li>{{ comment }}</li>
-                {% endfor %}
+        <br>
+        {% if post.json().comments %}
+            COMMENTS:
+            {% for comment in post.json().comments %}
+                <li>{{ comment }}</li>
+            {% endfor %}
 
-            {% endif %}
+        {% endif %}
         <hr>
 
     {% endfor %}
 
 
 {% endblock %}
+

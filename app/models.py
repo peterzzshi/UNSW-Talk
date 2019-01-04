@@ -115,8 +115,11 @@ class Post:
         return data
         # return cls(**data) if data else None
 
-    def id_to_name(self, id):
+    def show_name(self, id):
         return load_user(id).full_name
+
+    def show_pic(self, id, size):
+        return load_user(id).avatar(size)
 
     def json(self):
         return {
@@ -127,6 +130,9 @@ class Post:
             "longitude": self.longitude,
             "comments": self.comments
         }
+
+    def save_to_mongo(self):
+        db["posts"].insert(self.json())
 
 
 class Comment:
