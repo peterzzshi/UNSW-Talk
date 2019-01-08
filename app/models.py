@@ -2,6 +2,7 @@ from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from hashlib import md5
+from bson import ObjectId
 
 
 @login.user_loader
@@ -109,11 +110,16 @@ class Post:
         self.comments = comments
 
     @classmethod
-    def get_by_id(cls, id):
-        posts = db["posts"].find({"author": id})
+    def get_by_author(cls, author):
+        posts = db["posts"].find({"author": author})
         data = [cls(**post) for post in posts]
         return data
         # return cls(**data) if data else None
+
+    @classmethod
+    def get_by_id(cls, id):
+        post = db["posts"].find_one({"_id": ObjectId(id)})
+        return cls(**post)
 
     def show_name(self, id):
         return load_user(id).full_name
@@ -133,6 +139,9 @@ class Post:
 
     def save_to_mongo(self):
         db["posts"].insert(self.json())
+
+    def delete_post(self):
+        db["posts"].delete_one({"_id": ObjectId(self._id)})
 
 
 class Comment:

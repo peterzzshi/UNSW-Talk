@@ -23,12 +23,19 @@ def index():
         print(post.json())
         post.save_to_mongo()
         flash('Your post is now live!')
-        return redirect(url_for('index', zid=current_user._id))
+        return redirect(url_for('index'))
     # print(current_user._id)
-    posts = Post.get_by_id(current_user._id)
-
+    posts = Post.get_by_author(current_user._id)
 
     return render_template('index.jinja2', form=form, posts=posts, title='home page')
+
+@app.route('/delete_post/<id>')
+def delete_post(id):
+    post = Post.get_by_id(id)
+
+    post.delete_post()
+
+    return redirect(url_for('index'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
