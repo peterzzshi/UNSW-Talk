@@ -33,7 +33,6 @@ class RegistrationForm(FlaskForm):
         if student is not None:
             raise ValidationError('Please use a different Zid.')
 
-
     def validate_email(self, email):
         student = Student.get_by_email(email)
         if student is not None:
@@ -47,6 +46,5 @@ class EditProfileForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    post = TextAreaField('Say something', validators=[
-        DataRequired(), Length(min=1, max=140)])
+    post = TextAreaField('What is in your mind?', validators=[DataRequired(), Length(min=1, max=140)])
     submit = SubmitField('Submit')

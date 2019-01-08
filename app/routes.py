@@ -2,35 +2,31 @@ from flask import render_template, flash, redirect, url_for, request
 from app import app
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-
+from datetime import datetime
 
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
 from app.models import Student, Post
 
 
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET', 'POST'])
+# @app.route('/index')
 @login_required
 def index():
     form = PostForm()
     if form.validate_on_submit():
+        message = form.post.data
         # post = Post(body=form.post.data, author=current_user)
-
+        flash(message)
+        flash(datetime.now())
+        flash(current_user.full_name)
+        post = Post(current_user._id, message, datetime.now())
+        print(post.json())
+        post.save_to_mongo()
         flash('Your post is now live!')
-        return redirect(url_for('index'))
-    print(current_user._id)
+        return redirect(url_for('index', zid=current_user._id))
+    # print(current_user._id)
     posts = Post.get_by_id(current_user._id)
-    print(posts)
-    # posts = [
-    #     {
-    #         'author': {'username': 'John'},
-    #         'body': 'Beautiful day in Portland!'
-    #     },
-    #     {
-    #         'author': {'username': 'Susan'},
-    #         'body': 'The Avengers movie was so cool!'
-    #     }
-    # ]
+
 
     return render_template('index.jinja2', form=form, posts=posts, title='home page')
 
