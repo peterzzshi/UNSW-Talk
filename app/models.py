@@ -140,6 +140,9 @@ class Post:
     def save_to_mongo(self):
         db["posts"].insert(self.json())
 
+    def add_comment(self, comment):
+        self.comments.append(comment)
+
     def delete_post(self):
         db["posts"].delete_one({"_id": ObjectId(self._id)})
 

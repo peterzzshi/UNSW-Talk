@@ -4,7 +4,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from datetime import datetime
 
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, CommentForm
 from app.models import Student, Post
 
 
@@ -12,9 +12,10 @@ from app.models import Student, Post
 # @app.route('/index')
 @login_required
 def index():
-    form = PostForm()
-    if form.validate_on_submit():
-        message = form.post.data
+    postform = PostForm()
+    commentform = CommentForm()
+    if postform.validate_on_submit():
+        message = postform.post.data
         # post = Post(body=form.post.data, author=current_user)
         flash(message)
         flash(datetime.now())
@@ -25,14 +26,27 @@ def index():
         flash('Your post is now live!')
         return redirect(url_for('index'))
     # print(current_user._id)
+    if commentform.validate_on_submit():
+        message = commentform.comment.data
+        flash(message)
+
     posts = Post.get_by_author(current_user._id)
 
-    return render_template('index.jinja2', form=form, posts=posts, title='home page')
+    return render_template('index.jinja2', postform=postform, commentform=commentform, posts=posts, title='home page')
+
+
+@app.route('/<id>/add_comment', methods=['GET', 'POST'])
+def add_comment(id):
+
+
+    return redirect(url_for('index'))
+
 
 @app.route('/delete_post/<id>')
+@login_required
 def delete_post(id):
     post = Post.get_by_id(id)
-
+    flash("Post successfully deleted!")
     post.delete_post()
 
     return redirect(url_for('index'))

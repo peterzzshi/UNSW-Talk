@@ -17,15 +17,15 @@
 
 
     <form action="" method="post">
-        {{ form.hidden_tag() }}
+        {{ postform.hidden_tag() }}
         <p>
-            {{ form.post.label }}<br>
-            {{ form.post(cols=32, rows=4) }}<br>
-            {% for error in form.post.errors %}
+            {{ postform.post.label }}<br>
+            {{ postform.post(cols=32, rows=4) }}<br>
+            {% for error in postform.post.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ postform.submit() }}</p>
     </form>
 
 
@@ -38,19 +38,42 @@
         {#            {{ post.json().author }}#}
         {{ post.json().message }}
         <br>
-{#        <span >{{ post.json().time }}</span>#}
+        {#        <span >{{ post.json().time }}</span>#}
 
         <a href="{{ url_for("delete_post", id=post._id) }}"><button>Delete</button></a>
+
+        <form action="" method="post">
+            {{ commentform.hidden_tag() }}
+            <p>
+
+                {{ commentform.post_id.label }}<br>
+                {{ commentform.post_id }}<br>
+                {{ commentform.comment.label }}<br>
+                {{ commentform.comment(cols=32, rows=4) }}<br>
+                {% for error in commentform.comment.errors %}
+                    <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ commentform.submit() }}</p>
+        </form>
+
+
 
         <br>
         {% if post.json().comments %}
             COMMENTS:
             {% for comment in post.json().comments %}
-                <li>{{ comment }}</li>
+                <li>
+                    {{ comment.author }}:
+                    {{ comment.message }}
+                    <br>
+                    {{ comment.time }}
+                </li>
             {% endfor %}
 
         {% endif %}
         <hr>
+
 
     {% endfor %}
 
