@@ -28,7 +28,7 @@ def index():
     # print(current_user._id)
     if commentform.validate_on_submit():
         message = commentform.comment.data
-        flash(message)
+        print(message)
 
     posts = Post.get_by_author(current_user._id)
 
@@ -37,7 +37,6 @@ def index():
 
 @app.route('/<id>/add_comment', methods=['GET', 'POST'])
 def add_comment(id):
-
 
     return redirect(url_for('index'))
 

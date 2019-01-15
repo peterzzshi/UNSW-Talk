@@ -45,7 +45,9 @@
         <form action="" method="post">
             {{ commentform.hidden_tag() }}
             <p>
-
+                {% set postid = post._id %}
+                {{ postid }}
+                <br>
                 {{ commentform.post_id.label }}<br>
                 {{ commentform.post_id }}<br>
                 {{ commentform.comment.label }}<br>
